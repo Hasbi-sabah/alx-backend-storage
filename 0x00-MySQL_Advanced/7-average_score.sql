@@ -1,4 +1,4 @@
--- SQL script that creates a stored procedure AddBonus that adds a new correction for a student.
+-- SQL script that creates a stored procedure ComputeAverageScoreForUser that computes and store the average score for a student.
 DELIMITER $$
 CREATE PROCEDURE ComputeAverageScoreForUser(IN u_id INT)
 BEGIN
