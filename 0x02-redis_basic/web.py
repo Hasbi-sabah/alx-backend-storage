@@ -4,8 +4,9 @@
 import requests
 import redis
 
-
 client = redis.Redis()
+
+
 def get_page(url: str) -> str:
     """obtain the HTML content of a particular URL and returns it."""
     result = requests.get(url).text
