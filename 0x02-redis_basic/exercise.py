@@ -26,7 +26,7 @@ def call_history(method: Callable) -> Callable:
 
     @wraps(method)
     def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
-        """Wrapper function that records input and output data in Redis lists."""
+        """Wrapper that records input and output data in Redis lists."""
         input_data = str(args)
         self._redis.rpush(input_key, input_data)
         output_data = method(self, input_data)
@@ -71,7 +71,8 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
+    def get(self, key: str,
+            fn: Callable = None) -> Union[str, bytes, int, float]:
         """Retrieve data from the cache using the specified key."""
         if fn:
             return fn(self._redis.get(key))
