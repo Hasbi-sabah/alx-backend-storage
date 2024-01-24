@@ -5,13 +5,13 @@ import requests
 import redis
 
 
-
+client = redis.Redis()
 def get_page(url: str) -> str:
     """obtain the HTML content of a particular URL and returns it."""
-    client = redis.Redis()
+    result = requests.get(url).text
     if not client.get("count:{}".format(url)):
         client.set("count:{}".format(url), 1)
+        client.setex("result:{}".format(url), 10, result)
     else:
         client.incr("count:{}".format(url), 1)
-    client.expire("count:{}".format(url), 10)
-    return requests.get(url).text
+    return result
