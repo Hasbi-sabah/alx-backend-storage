@@ -29,7 +29,7 @@ def call_history(method: Callable) -> Callable:
         """Wrapper that records input and output data in Redis lists."""
         input_data = str(args)
         self._redis.rpush(input_key, input_data)
-        output_data = method(self, input_data)
+        output_data = method(self, *args)
         self._redis.rpush(output_key, output_data)
         return output_data
 
@@ -43,11 +43,12 @@ def replay(method: Callable) -> None:
     in_key = method.__qualname__ + ":inputs"
     out_key = method.__qualname__ + ":outputs"
 
-    zippy = list(zip(
-        client.lrange(in_key, 0, -1),
-        client.lrange(out_key, 0, -1)))
+    in_data = client.lrange(in_key, 0, -1)
+    out_data = client.lrange(out_key, 0, -1)
+    zippy = list(zip(in_data, out_data))
 
     print("{} was called {} times:".format(method.__qualname__, len(zippy)))
+
     for value, r_id in zippy:
         print("{}(*{}) -> {}".format(
             method.__qualname__,
